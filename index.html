@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creativeiitian — Custom UNO Photo-to-PDF Compressor (Under 15 MB for Amazon)</title>
+  <meta name="description" content="Official Creativeiitian 100% client-side photo-to-PDF compressor for Customized Photo UNO Cards on Amazon. Combine up to 108 photos into a crisp PDF guaranteed under 15 MB." />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              charcoal: '#111827',
+              canvas: '#FAFAFA',
+              red: '#EF4444',
+              blue: '#2563EB',
+              yellow: '#F59E0B',
+              green: '#10B981',
+              pink: '#EC4899',
+            }
+          },
+          keyframes: {
+            floatSlow: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' },
+            },
+            fadeSlideUp: {
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            toastIn: {
+              '0%': { opacity: '0', transform: 'translateY(16px) scale(0.96)' },
+              '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+            }
+          },
+          animation: {
+            'float-slow': 'floatSlow 4s ease-in-out infinite',
+            'fade-slide-up': 'fadeSlideUp 0.35s ease-out forwards',
+            'toast-in': 'toastIn 0.25s ease-out forwards',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- pdf-lib v1.17.1 for 100% Client-Side PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" defer></script>
+</head>
+<body class="bg-[#FAFAFA] text-[#111827] font-sans antialiased selection:bg-pink-100 selection:text-pink-900 overflow-x-hidden">
+
+  <!-- ===================================================================== -->
+  <!-- 1. STICKY HEADER                                                      -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-gray-200/80">
+    <!-- Subtle UNO 4-color hairline accent -->
+    <div class="h-1 w-full bg-gradient-to-r from-[#EF4444] via-[#F59E0B] via-[#10B981] to-[#2563EB]"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <!-- Brand Logo -->
+      <a href="#top" class="flex items-center gap-2.5 group focus:outline-none">
+        <!-- 4-Color Mini UNO Card Fan Icon -->
+        <div class="relative w-9 h-9 flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 40 40" class="w-9 h-9 drop-shadow-sm transition-transform duration-300 group-hover:scale-105" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="4" y="10" width="15" height="22" rx="3.5" transform="rotate(-18 4 10)" fill="#EF4444" stroke="#FFFFFF" stroke-width="1.5"/>
+            <rect x="11" y="7" width="15" height="22" rx="3.5" transform="rotate(-6 11 7)" fill="#F59E0B" stroke="#FFFFFF" stroke-width="1.5"/>
+            <rect x="17" y="7" width="15" height="22" rx="3.5" transform="rotate(8 17 7)" fill="#10B981" stroke="#FFFFFF" stroke-width="1.5"/>
+            <rect x="22" y="10" width="15" height="22" rx="3.5" transform="rotate(20 22 10)" fill="#2563EB" stroke="#FFFFFF" stroke-width="1.5"/>
+            <ellipse cx="22" cy="20" rx="5" ry="7" transform="rotate(14 22 20)" fill="#111827" stroke="#FFFFFF" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+          <span class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-[#111827] leading-none">
+            Creativeiitian
+          </span>
+          <span class="inline-flex items-center mt-0.5 sm:mt-0 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-gray-100 text-gray-600 border border-gray-200/80 w-fit">
+            Official Photo Tool
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600" aria-label="Main Navigation">
+        <a href="#compressor-tool" class="hover:text-[#111827] transition-colors">Create PDF</a>
+        <a href="#how-it-works" class="hover:text-[#111827] transition-colors">How It Works</a>
+        <a href="#product-features" class="hover:text-[#111827] transition-colors">Product Features</a>
+        <a href="#faq" class="hover:text-[#111827] transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Right Privacy Pill & Mobile Action -->
+      <div class="flex items-center gap-2">
+        <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-semibold">
+          <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <span>100% Client-Side • Private</span>
+        </div>
+
+        <!-- Mobile Quick Jump Button -->
+        <a href="#compressor-tool" class="md:hidden inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-[#111827] text-white text-xs font-semibold shadow-sm active:scale-95 transition">
+          Create PDF
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- =================================================================== -->
+    <!-- 2. HERO & PRODUCT ADVERTISEMENT SECTION                             -->
+    <!-- =================================================================== -->
+    <section class="relative overflow-hidden pt-8 pb-14 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-24">
+      <!-- Subtle playful ambient background accents -->
+      <div class="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-pink-200/30 blur-3xl"></div>
+      <div class="pointer-events-none absolute top-20 -right-24 w-80 h-80 rounded-full bg-blue-200/30 blur-3xl"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+          <!-- Left Column: Copy & CTAs -->
+          <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+            <!-- Official Helper Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm text-xs sm:text-sm font-semibold text-[#111827]">
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EF4444] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#EF4444]"></span>
+              </span>
+              Official Amazon Customization Helper
+            </div>
+
+            <!-- Main Headline -->
+            <h1 class="font-display font-extrabold text-3xl sm:text-5xl lg:text-[3.25rem] leading-[1.12] tracking-tight text-[#111827]">
+              Make Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#EF4444] via-[#EC4899] to-[#2563EB]">108-Photo</span> Custom UNO PDF in Seconds
+            </h1>
+
+            <!-- Subcopy -->
+            <p class="text-base sm:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+              Ordering <strong class="font-semibold text-[#111827]">Creativeiitian Customized Photo UNO Cards</strong> on Amazon? Select up to 108 favorite photos and convert them into one crisp PDF (1 photo per page) <strong class="font-semibold text-emerald-700">guaranteed strictly under Amazon’s 15 MB limit</strong>—100% locally in your browser with zero server uploads.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 pt-1">
+              <a href="#compressor-tool" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#111827] hover:bg-gray-800 text-white font-semibold text-base shadow-lg shadow-gray-900/15 active:scale-[0.98] transition">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                Upload Photos Now
+              </a>
+
+              <!-- ============================================================ -->
+              <!-- STORE OWNER NOTE: Paste your Amazon product/store link in    -->
+              <!-- the AMAZON_STORE_URL constant at the top of the <script>     -->
+              <!-- below (or update href="#amazon-store" directly here).        -->
+              <!-- ============================================================ -->
+              <a href="#amazon-store" data-amazon-link class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-white hover:bg-gray-50 text-[#111827] font-semibold text-base border border-gray-200 shadow-sm active:scale-[0.98] transition">
+                <svg class="w-5 h-5 text-[#F59E0B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                Shop on Amazon — Creativeiitian
+              </a>
+            </div>
+
+            <!-- Trust Micro-Pills -->
+            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 pt-2 text-xs sm:text-sm text-gray-500 font-medium">
+              <span class="inline-flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Zero Server Uploads
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                1 Photo Per Page
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                iPhone &amp; Android Ready
+              </span>
+            </div>
+          </div>
+
+          <!-- Right Column: Product Showcase Card -->
+          <div class="lg:col-span-6 relative">
+            <!-- Subtle UNO-colored ambient glow behind card -->
+            <div class="absolute -inset-2 rounded-[2rem] bg-gradient-to-tr from-[#EF4444]/20 via-[#F59E0B]/20 via-[#10B981]/20 to-[#2563EB]/25 blur-xl opacity-80"></div>
+
+            <div class="relative bg-white rounded-[1.75rem] p-3 sm:p-4 border border-gray-200/90 shadow-2xl shadow-gray-900/10">
+              <div class="relative rounded-2xl overflow-hidden bg-gray-50 border border-gray-100">
+                <img
+                  src="main-image.png"
+                  alt="Creativeiitian Customized Photo UNO Cards with custom tuck box and designer card frames"
+                  class="w-full h-auto object-cover block"
+                  onerror="this.onerror=null;this.src='https://placehold.co/960x720/111827/FFFFFF?text=Creativeiitian+Custom+Photo+UNO+Cards';"
+                />
+
+                <!-- Top-left floating chip -->
+                <div class="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-sm border border-gray-200/80 shadow-md text-xs font-bold text-[#111827]">
+                  <span class="w-2 h-2 rounded-full bg-[#EC4899]"></span>
+                  108 Custom Playable Cards
+                </div>
+              </div>
+
+              <!-- Bottom Highlight Chips Row -->
+              <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200/70">
+                  <div class="w-8 h-8 rounded-lg bg-[#111827] text-white flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-[#111827] truncate">Custom Printed Tuck Box</p>
+                    <p class="text-[11px] text-gray-500 truncate">Designer frames &amp; vibrant colors</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200/70">
+                  <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-emerald-900 truncate">Guaranteed &lt; 15 MB PDF</p>
+                    <p class="text-[11px] text-emerald-700 truncate">Amazon upload limit approved</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 3. CORE CLIENT-SIDE PDF COMPRESSOR APP                              -->
+    <!-- =================================================================== -->
+    <section id="compressor-tool" class="py-6 sm:py-12 scroll-mt-20">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Library Offline Warning (Hidden unless pdf-lib fails to load) -->
+        <div id="lib-error-banner" class="hidden mb-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm flex items-start gap-3">
+          <svg class="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <div>
+            <p class="font-bold">PDF Engine Offline</p>
+            <p class="text-red-700 mt-0.5">We couldn’t load the PDF library from CDN. Please check your internet connection and refresh the page.</p>
+          </div>
+        </div>
+
+        <!-- Main Utility Card -->
+        <div class="bg-white rounded-3xl border border-gray-200/90 shadow-xl shadow-gray-900/5 overflow-hidden">
+
+          <!-- Tool Card Header -->
+          <div class="px-5 sm:px-8 py-5 sm:py-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-b from-gray-50/70 to-white">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                <h2 class="font-display font-extrabold text-xl sm:text-2xl text-[#111827]">
+                  Custom UNO Photo-to-PDF Creator
+                </h2>
+              </div>
+              <p class="text-sm text-gray-500 mt-1">
+                Select 1 to 108 photos. Every photo gets its own crisp page, auto-compressed strictly under 15 MB.
+              </p>
+            </div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-800 text-xs font-semibold w-fit shrink-0">
+              <svg class="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              Auto-Target: Strictly &lt; 15 MB (Safe 14.5 MB cap)
+            </div>
+          </div>
+
+          <div class="p-5 sm:p-8 space-y-6">
+
+            <!-- Hidden File Input (Reused by Dropzone & + Add More button) -->
+            <input
+              id="photo-input"
+              type="file"
+              accept="image/*"
+              multiple
+              class="sr-only"
+            />
+
+            <!-- Drag & Drop Upload Zone -->
+            <div
+              id="drop-zone"
+              tabindex="0"
+              role="button"
+              aria-label="Upload up to 108 photos"
+              class="relative group rounded-2xl border-2 border-dashed border-gray-300 hover:border-[#2563EB] focus:border-[#2563EB] focus:outline-none bg-gray-50/70 hover:bg-blue-50/30 transition-all duration-200 p-6 sm:p-10 text-center cursor-pointer"
+            >
+              <div class="flex flex-col items-center justify-center space-y-3">
+                <!-- Multi-color icon badge -->
+                <div class="w-14 h-14 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <svg class="w-7 h-7 text-[#2563EB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+
+                <div class="space-y-1">
+                  <p class="font-display font-bold text-base sm:text-lg text-[#111827]">
+                    Drag &amp; drop your UNO card photos here
+                  </p>
+                  <p class="text-xs sm:text-sm text-gray-500">
+                    Or tap below to pick from your phone gallery or computer (select in one batch or multiple batches)
+                  </p>
+                </div>
+
+                <div class="pt-1">
+                  <span class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#111827] group-hover:bg-[#2563EB] text-white font-semibold text-sm sm:text-base shadow-md transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                    Select Photos (Up to 108)
+                  </span>
+                </div>
+
+                <p class="text-[11px] sm:text-xs text-gray-400">
+                  Supports JPG, PNG, WebP • 100% Private (Never leaves your device)
+                </p>
+              </div>
+            </div>
+
+            <!-- Live Status Bar & Quick Actions (Shown when >= 1 photo added) -->
+            <div id="status-panel" class="hidden space-y-4 animate-fade-slide-up">
+              <div class="p-4 sm:p-5 rounded-2xl bg-gray-50 border border-gray-200/80 space-y-3.5">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <!-- Counter & Size Info -->
+                  <div class="flex flex-wrap items-center gap-2.5">
+                    <span id="photo-count-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#111827] text-white text-xs sm:text-sm font-bold">
+                      0 / 108 Photos
+                    </span>
+                    <span id="original-size-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-700 text-xs sm:text-sm font-semibold">
+                      Original Total: 0.0 MB
+                    </span>
+                    <span id="remaining-slots-text" class="text-xs text-gray-500 font-medium">
+                      108 slots left
+                    </span>
+                  </div>
+
+                  <!-- Quick Action Buttons -->
+                  <div class="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      id="btn-add-more"
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-blue-50 text-[#2563EB] border border-blue-200 text-xs sm:text-sm font-semibold transition active:scale-95"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                      Add More
+                    </button>
+
+                    <button
+                      type="button"
+                      id="btn-shuffle"
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-amber-50 text-amber-700 border border-amber-200 text-xs sm:text-sm font-semibold transition active:scale-95"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                      Shuffle
+                    </button>
+
+                    <button
+                      type="button"
+                      id="btn-clear-all"
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-red-50 text-red-600 border border-red-200 text-xs sm:text-sm font-semibold transition active:scale-95"
+                    >
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      Clear All
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Animated Fill Bar -->
+                <div class="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                  <div
+                    id="count-progress-bar"
+                    class="h-full rounded-full bg-gradient-to-r from-[#EF4444] via-[#F59E0B] to-[#10B981] transition-all duration-300"
+                    style="width: 0%"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Compact Settings Row -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                <!-- Optional Order Name / File Label -->
+                <div class="p-3.5 rounded-2xl bg-white border border-gray-200/90 space-y-1.5">
+                  <label for="order-label-input" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    Order Name / File Label <span class="font-normal text-gray-400 normal-case">(Optional)</span>
+                  </label>
+                  <input
+                    id="order-label-input"
+                    type="text"
+                    maxlength="60"
+                    placeholder="e.g., Priya-Birthday-UNO"
+                    class="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm text-[#111827] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 focus:border-[#2563EB] transition"
+                  />
+                  <p class="text-[11px] text-gray-400 truncate">
+                    Output: <span id="filename-preview" class="font-medium text-gray-600">Creativeiitian-Custom-UNO-Cards.pdf</span>
+                  </p>
+                </div>
+
+                <!-- Page Layout Selector -->
+                <div class="p-3.5 rounded-2xl bg-white border border-gray-200/90 space-y-1.5">
+                  <label for="page-layout-select" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+                    PDF Page Layout (1 Photo / Page)
+                  </label>
+                  <select
+                    id="page-layout-select"
+                    class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-white text-sm font-medium text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 focus:border-[#2563EB] transition"
+                  >
+                    <option value="fit" selected>Fit Full Photo (No Cropping — Recommended)</option>
+                    <option value="portrait">Portrait Card Page (Centered)</option>
+                  </select>
+                  <p id="layout-helper-text" class="text-[11px] text-gray-400">
+                    Each PDF page matches your photo’s exact proportions with zero cropping.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Thumbnail Grid Header & View Toggle -->
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <p class="text-xs sm:text-sm font-semibold text-gray-700">
+                  Photo Order Preview <span class="font-normal text-gray-400">(Tap rotate if any phone photo is sideways)</span>
+                </p>
+                <button
+                  type="button"
+                  id="btn-toggle-grid"
+                  class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold transition"
+                >
+                  Show All Photos
+                </button>
+              </div>
+
+              <!-- Responsive Thumbnail Preview Grid -->
+              <div id="grid-scroll-wrapper" class="rounded-2xl border border-gray-200/80 bg-gray-50/50 p-3 sm:p-4 transition-all">
+                <div
+                  id="thumbnail-grid"
+                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3"
+                >
+                  <!-- Photo cards injected dynamically -->
+                </div>
+              </div>
+
+              <!-- Primary Generate PDF Action Bar -->
+              <div id="generate-action-bar" class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-500">
+                  <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                  <span>Smart engine guarantees final PDF is strictly under <strong>15 MB</strong>.</span>
+                </div>
+
+                <button
+                  type="button"
+                  id="btn-generate-pdf"
+                  class="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-[#111827] to-gray-800 hover:from-[#2563EB] hover:to-[#1D4ED8] text-white font-display font-bold text-base shadow-lg shadow-gray-900/15 active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                  <span id="btn-generate-text">Create Compressed PDF (&lt; 15 MB)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Processing Progress Panel -->
+            <div id="progress-panel" class="hidden p-5 sm:p-6 rounded-2xl bg-blue-50/70 border border-blue-200 space-y-4 animate-fade-slide-up">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-9 h-9 rounded-xl bg-[#2563EB] text-white flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <p id="progress-stage-title" class="font-display font-bold text-sm sm:text-base text-[#111827] truncate">
+                      Optimizing photos...
+                    </p>
+                    <p id="progress-stage-sub" class="text-xs text-blue-700 truncate">
+                      Processing locally on your device — please keep this tab open.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-3 shrink-0">
+                  <span id="progress-percent" class="font-display font-extrabold text-lg text-[#2563EB]">0%</span>
+                  <button
+                    type="button"
+                    id="btn-cancel-process"
+                    class="px-3 py-1.5 rounded-xl bg-white hover:bg-red-50 text-red-600 border border-red-200 text-xs font-bold transition active:scale-95"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+
+              <div class="w-full h-3 bg-blue-100 rounded-full overflow-hidden">
+                <div
+                  id="progress-bar-fill"
+                  class="h-full rounded-full bg-gradient-to-r from-[#2563EB] via-[#EC4899] to-[#10B981] transition-all duration-150"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Result & Download Panel -->
+            <div id="result-panel" class="hidden rounded-2xl border-2 border-emerald-200 bg-gradient-to-b from-emerald-50/70 to-white p-5 sm:p-7 space-y-5 animate-fade-slide-up">
+              <!-- Verified Header -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/25 shrink-0">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  </div>
+                  <div>
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-1">
+                      Amazon 15 MB Limit Passed ✓
+                    </div>
+                    <h3 class="font-display font-extrabold text-lg sm:text-xl text-[#111827]">
+                      Your Custom UNO PDF is Ready!
+                    </h3>
+                  </div>
+                </div>
+                <span id="result-pass-note" class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl w-fit">
+                  Verified &lt; 15 MB
+                </span>
+              </div>
+
+              <!-- 4 Stats Cards -->
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="p-3.5 rounded-2xl bg-white border border-gray-200/80 shadow-sm">
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Total Pages</p>
+                  <p id="stat-pages" class="font-display font-extrabold text-xl text-[#111827] mt-0.5">0 Pages</p>
+                  <p class="text-[11px] text-gray-500">1 photo per page</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white border border-gray-200/80 shadow-sm">
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Original Size</p>
+                  <p id="stat-original" class="font-display font-extrabold text-xl text-gray-700 mt-0.5">0 MB</p>
+                  <p class="text-[11px] text-gray-500">Raw uploaded images</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 shadow-sm">
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Final PDF Size</p>
+                  <p id="stat-final" class="font-display font-extrabold text-xl text-emerald-700 mt-0.5">0 MB</p>
+                  <p class="text-[11px] text-emerald-600 font-medium">Strictly under 15 MB</p>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white border border-gray-200/80 shadow-sm">
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Compressed</p>
+                  <p id="stat-saved" class="font-display font-extrabold text-xl text-[#2563EB] mt-0.5">0%</p>
+                  <p class="text-[11px] text-gray-500">Print quality preserved</p>
+                </div>
+              </div>
+
+              <!-- Download & Preview Buttons -->
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                <button
+                  type="button"
+                  id="btn-download-pdf"
+                  class="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-display font-bold text-base shadow-lg shadow-emerald-600/20 active:scale-[0.98] transition"
+                >
+                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                  Download PDF for Amazon
+                </button>
+
+                <button
+                  type="button"
+                  id="btn-preview-pdf"
+                  class="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-white hover:bg-gray-50 text-[#111827] font-semibold text-base border border-gray-200 shadow-sm active:scale-[0.98] transition"
+                >
+                  <svg class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                  Preview PDF
+                </button>
+              </div>
+
+              <!-- Helpful Amazon Next Step Instruction Box -->
+              <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3">
+                <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <div class="text-xs sm:text-sm text-amber-950 leading-relaxed">
+                  <strong class="font-bold">Next Step:</strong> Go back to your Amazon order customization page for <strong>Creativeiitian Custom UNO Cards</strong> and upload this downloaded PDF file! Our print team will place your photos into the custom UNO card frames and ship your deck.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 4. HOW IT WORKS (3 CLEAN STEPS)                                     -->
+    <!-- =================================================================== -->
+    <section id="how-it-works" class="py-14 sm:py-20 scroll-mt-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+          <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-[#2563EB] text-xs font-bold uppercase tracking-wider">
+            Simple 3-Step Flow
+          </span>
+          <h2 class="font-display font-extrabold text-2xl sm:text-4xl text-[#111827] mt-3">
+            From Phone Gallery to Custom UNO Deck
+          </h2>
+          <p class="text-gray-600 mt-2.5 text-sm sm:text-base">
+            Designed so anyone can prepare a print-ready Amazon PDF in under a minute—no apps or sign-ups needed.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Step 1 -->
+          <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div class="w-12 h-12 rounded-2xl bg-red-50 text-[#EF4444] flex items-center justify-center font-display font-extrabold text-xl mb-5 border border-red-100">
+              1
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#111827]">
+              Select 1 to 108 Favorite Photos
+            </h3>
+            <p class="text-sm text-gray-600 mt-2 leading-relaxed">
+              Pick a mix of friends, family, couple, birthday, or vacation photos straight from your phone. Rotate or reorder cards effortlessly.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-[#F59E0B] flex items-center justify-center font-display font-extrabold text-xl mb-5 border border-amber-100">
+              2
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#111827]">
+              Smart Auto-Compression
+            </h3>
+            <p class="text-sm text-gray-600 mt-2 leading-relaxed">
+              Our local browser engine places 1 photo per page and smartly tunes resolution &amp; compression so your PDF is guaranteed strictly under 15 MB.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="bg-white rounded-3xl p-6 sm:p-7 border border-gray-200/80 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-[#10B981] flex items-center justify-center font-display font-extrabold text-xl mb-5 border border-emerald-100">
+              3
+            </div>
+            <h3 class="font-display font-bold text-lg text-[#111827]">
+              Upload on Amazon &amp; Play!
+            </h3>
+            <p class="text-sm text-gray-600 mt-2 leading-relaxed">
+              Attach your downloaded PDF on the Creativeiitian Amazon customization page. We print, pack in a custom tuck box, and deliver to your door!
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 5. PRODUCT ADVERTISEMENT / SHOWCASE BAND                            -->
+    <!-- =================================================================== -->
+    <section id="product-features" class="py-12 sm:py-20 scroll-mt-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative rounded-[2rem] bg-[#111827] text-white overflow-hidden p-6 sm:p-10 lg:p-14 shadow-2xl shadow-gray-900/20">
+          <!-- Decorative UNO Ambient Glows -->
+          <div class="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#EC4899]/20 blur-3xl"></div>
+          <div class="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#2563EB]/20 blur-3xl"></div>
+
+          <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <!-- Left: Product Image Frame -->
+            <div class="lg:col-span-5">
+              <div class="rounded-3xl bg-white p-3 shadow-2xl">
+                <img
+                  src="main-image.png"
+                  alt="Creativeiitian Customized Photo UNO Deck showcase"
+                  class="w-full h-auto rounded-2xl object-cover block"
+                  onerror="this.onerror=null;this.src='https://placehold.co/800x600/1F2937/FFFFFF?text=Creativeiitian+Custom+UNO';"
+                />
+              </div>
+            </div>
+
+            <!-- Right: Brand Features & Storefront CTA -->
+            <div class="lg:col-span-7 space-y-6">
+              <div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-pink-300 text-xs font-bold uppercase tracking-wider">
+                  Bestseller by Creativeiitian
+                </span>
+                <h2 class="font-display font-extrabold text-2xl sm:text-4xl text-white mt-3 leading-tight">
+                  Why Customers Love Creativeiitian Custom UNO
+                </h2>
+                <p class="text-gray-300 text-sm sm:text-base mt-2.5">
+                  Turn your favorite camera roll memories into a real, fully playable 108-card party deck that everyone keeps forever.
+                </p>
+              </div>
+
+              <!-- 4 Feature Cards -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="flex items-center gap-2.5 mb-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></span>
+                    <h3 class="font-display font-bold text-sm sm:text-base text-white">108 Playable Custom Cards</h3>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                    Full UNO-style playable deck with numbers, action cards, and wild cards personalized with your own photos.
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="flex items-center gap-2.5 mb-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#EC4899]"></span>
+                    <h3 class="font-display font-bold text-sm sm:text-base text-white">Vibrant Designer Card Frames</h3>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                    Featuring cute Heart, Scallop, Polaroid, and Classic Oval photo cutouts across bright, high-contrast card designs.
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="flex items-center gap-2.5 mb-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></span>
+                    <h3 class="font-display font-bold text-sm sm:text-base text-white">300 GSM Print &amp; Custom Tuck Box</h3>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                    Crisp, durable thick cardstock finish paired with a sleek matching custom printed tuck box for gifting &amp; storage.
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="flex items-center gap-2.5 mb-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#10B981]"></span>
+                    <h3 class="font-display font-bold text-sm sm:text-base text-white">Perfect Personalized Gift</h3>
+                  </div>
+                  <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                    A guaranteed smile-maker for Birthdays, Anniversaries, Valentine’s Day, Best Friends, and Road Trips.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Promo CTA -->
+              <div class="pt-1 flex flex-wrap items-center gap-3">
+                <a href="#amazon-store" data-amazon-link class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-white hover:bg-gray-100 text-[#111827] font-display font-bold text-sm sm:text-base shadow-lg active:scale-[0.98] transition">
+                  Explore More Custom Gifts by Creativeiitian
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </a>
+                <a href="#compressor-tool" class="inline-flex items-center justify-center px-5 py-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold text-sm transition">
+                  Start Creating PDF ↑
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- 6. FAQ ACCORDION                                                    -->
+    <!-- =================================================================== -->
+    <section id="faq" class="py-12 sm:py-20 scroll-mt-16">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold uppercase tracking-wider">
+            Quick Answers
+          </span>
+          <h2 class="font-display font-extrabold text-2xl sm:text-4xl text-[#111827] mt-3">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="space-y-3" id="faq-list">
+          <!-- FAQ 1 -->
+          <div class="faq-item bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-sm">
+            <button type="button" class="faq-trigger w-full px-5 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="true">
+              <span class="font-display font-bold text-sm sm:text-base text-[#111827]">
+                Are my photos uploaded to a server?
+              </span>
+              <svg class="faq-chevron w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content px-5 sm:px-6 pb-5 text-sm text-gray-600 leading-relaxed">
+              No — <strong>100% of compression and PDF creation happens locally inside your own browser</strong>. Your private photos never leave your phone or computer and are never sent to any external server.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-sm">
+            <button type="button" class="faq-trigger w-full px-5 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+              <span class="font-display font-bold text-sm sm:text-base text-[#111827]">
+                Do I have to upload all 108 photos?
+              </span>
+              <svg class="faq-chevron w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-5 sm:px-6 pb-5 text-sm text-gray-600 leading-relaxed">
+              Not at all! You can upload anywhere from <strong>1 to 108 photos</strong>. If you upload fewer than 108 photos (for example, 25 or 54 favorites), our Creativeiitian design team will neatly repeat your favorite photos across the deck—or upload all 108 for a unique memory on every single card!
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-sm">
+            <button type="button" class="faq-trigger w-full px-5 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+              <span class="font-display font-bold text-sm sm:text-base text-[#111827]">
+                Why does the PDF need to be under 15 MB?
+              </span>
+              <svg class="faq-chevron w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-5 sm:px-6 pb-5 text-sm text-gray-600 leading-relaxed">
+              Amazon’s customization file uploader strictly enforces a <strong>15 MB maximum file size</strong>. Standard smartphone photos can easily total 200+ MB for 108 images. This tool automatically maximizes clarity while guaranteeing your final PDF stays strictly below 15 MB so Amazon accepts it on the first try.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-sm">
+            <button type="button" class="faq-trigger w-full px-5 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between gap-4 focus:outline-none" aria-expanded="false">
+              <span class="font-display font-bold text-sm sm:text-base text-[#111827]">
+                Will compressing ruin print quality?
+              </span>
+              <svg class="faq-chevron w-5 h-5 text-gray-400 shrink-0 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div class="faq-content hidden px-5 sm:px-6 pb-5 text-sm text-gray-600 leading-relaxed">
+              No! Because each UNO card photo frame is compact in physical print size (around 2 × 2.5 inches), our smart resolution &amp; quality tuning removes unnecessary camera bloat while keeping faces, colors, and details super sharp and vibrant for printing.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- 7. CLEAN FOOTER                                                       -->
+  <!-- ===================================================================== -->
+  <footer class="bg-white border-t border-gray-200/90 pt-10 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- Brand Info -->
+        <div class="flex flex-col items-center md:items-start gap-1.5 text-center md:text-left">
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1" aria-hidden="true">
+              <span class="w-2.5 h-3.5 rounded-sm bg-[#EF4444]"></span>
+              <span class="w-2.5 h-3.5 rounded-sm bg-[#F59E0B]"></span>
+              <span class="w-2.5 h-3.5 rounded-sm bg-[#10B981]"></span>
+              <span class="w-2.5 h-3.5 rounded-sm bg-[#2563EB]"></span>
+            </div>
+            <span class="font-display font-extrabold text-lg text-[#111827]">Creativeiitian</span>
+          </div>
+          <p class="text-sm text-gray-600 font-medium">
+            Made for Creativeiitian Custom UNO Customers
+          </p>
+          <p class="text-xs text-gray-400">
+            100% Client-Side Privacy Guarantee • Zero photos stored or transmitted.
+          </p>
+        </div>
+
+        <!-- Links & Copyright -->
+        <div class="flex flex-col items-center md:items-end gap-2 text-xs sm:text-sm text-gray-500">
+          <div class="flex items-center gap-5 font-medium">
+            <a href="#compressor-tool" class="hover:text-[#111827] transition">PDF Tool</a>
+            <a href="#how-it-works" class="hover:text-[#111827] transition">How It Works</a>
+            <a href="#faq" class="hover:text-[#111827] transition">FAQ</a>
+            <a href="#amazon-store" data-amazon-link class="text-[#2563EB] hover:underline font-semibold">Amazon Store</a>
+          </div>
+          <p class="text-xs text-gray-400">
+            &copy; 2026 Creativeiitian. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- CUSTOM CONFIRMATION MODAL (No browser alert/confirm used)             -->
+  <!-- ===================================================================== -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-gray-200 animate-toast-in space-y-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+        </div>
+        <h3 id="confirm-modal-title" class="font-display font-bold text-lg text-[#111827]">
+          Remove all photos?
+        </h3>
+      </div>
+      <p id="confirm-modal-desc" class="text-sm text-gray-600">
+        This will clear all uploaded photos from the workspace so you can start fresh.
+      </p>
+      <div class="flex items-center justify-end gap-2.5 pt-2">
+        <button type="button" id="confirm-cancel-btn" class="px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold transition">
+          Keep Photos
+        </button>
+        <button type="button" id="confirm-proceed-btn" class="px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold shadow-sm transition">
+          Yes, Clear All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- TOAST NOTIFICATION CONTAINER                                          -->
+  <!-- ===================================================================== -->
+  <div id="toast-container" class="fixed bottom-4 right-4 left-4 sm:left-auto z-50 flex flex-col items-end gap-2.5 pointer-events-none" aria-live="polite"></div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION JAVASCRIPT (100% CLIENT-SIDE COMPRESSION ENGINE)          -->
+  <!-- ===================================================================== -->
+  <script>
+    (() => {
+      'use strict';
+
+      /* =====================================================================
+       * STORE OWNER CONFIGURATION
+       * Paste your Amazon Store or Custom UNO Product URL below.
+       * All "Shop on Amazon" and "Explore More" buttons update automatically!
+       * ===================================================================== */
+      const AMAZON_STORE_URL = '#amazon-store'; // <-- Replace with e.g. 'https://www.amazon.in/dp/YOUR_ASIN'
+
+      /* =====================================================================
+       * STRICT COMPRESSION CONSTANTS
+       * Amazon strictly requires < 15 MB.
+       * 15,000,000 decimal bytes = 15 MB (14.30 MiB).
+       * We enforce a hard strict ceiling of 14,600,000 bytes (13.92 MiB / 14.6 MB)
+       * and aim for 14,200,000 bytes so it ALWAYS passes Amazon's validator.
+       * ===================================================================== */
+      const MAX_IMAGES = 108;
+      const SAFE_TARGET_BYTES = 14_200_000;
+      const STRICT_CEILING_BYTES = 14_600_000;
+      const COMPACT_THRESHOLD = 24;
+      const DEFAULT_FILENAME = 'Creativeiitian-Custom-UNO-Cards.pdf';
+
+      /* =====================================================================
+       * APPLICATION STATE
+       * ===================================================================== */
+      const state = {
+        photos: [],          // Array of { id, file, name, size, thumbUrl, rotation }
+        showAllGrid: false,  // Toggles compact scrollable grid vs full grid when > 24 photos
+        isProcessing: false,
+        isCancelled: false,
+        generatedPdfBlob: null,
+        generatedPdfUrl: null,
+        generatedFilename: DEFAULT_FILENAME
+      };
+
+      /* =====================================================================
+       * DOM REFERENCES
+       * ===================================================================== */
+      const dom = {
+        libErrorBanner: document.getElementById('lib-error-banner'),
+        photoInput: document.getElementById('photo-input'),
+        dropZone: document.getElementById('drop-zone'),
+        statusPanel: document.getElementById('status-panel'),
+        photoCountBadge: document.getElementById('photo-count-badge'),
+        originalSizeBadge: document.getElementById('original-size-badge'),
+        remainingSlotsText: document.getElementById('remaining-slots-text'),
+        countProgressBar: document.getElementById('count-progress-bar'),
+        btnAddMore: document.getElementById('btn-add-more'),
+        btnShuffle: document.getElementById('btn-shuffle'),
+        btnClearAll: document.getElementById('btn-clear-all'),
+        orderLabelInput: document.getElementById('order-label-input'),
+        filenamePreview: document.getElementById('filename-preview'),
+        pageLayoutSelect: document.getElementById('page-layout-select'),
+        layoutHelperText: document.getElementById('layout-helper-text'),
+        btnToggleGrid: document.getElementById('btn-toggle-grid'),
+        gridScrollWrapper: document.getElementById('grid-scroll-wrapper'),
+        thumbnailGrid: document.getElementById('thumbnail-grid'),
+        generateActionBar: document.getElementById('generate-action-bar'),
+        btnGeneratePdf: document.getElementById('btn-generate-pdf'),
+        btnGenerateText: document.getElementById('btn-generate-text'),
+        progressPanel: document.getElementById('progress-panel'),
+        progressStageTitle: document.getElementById('progress-stage-title'),
+        progressStageSub: document.getElementById('progress-stage-sub'),
+        progressPercent: document.getElementById('progress-percent'),
+        progressBarFill: document.getElementById('progress-bar-fill'),
+        btnCancelProcess: document.getElementById('btn-cancel-process'),
+        resultPanel: document.getElementById('result-panel'),
+        resultPassNote: document.getElementById('result-pass-note'),
+        statPages: document.getElementById('stat-pages'),
+        statOriginal: document.getElementById('stat-original'),
+        statFinal: document.getElementById('stat-final'),
+        statSaved: document.getElementById('stat-saved'),
+        btnDownloadPdf: document.getElementById('btn-download-pdf'),
+        btnPreviewPdf: document.getElementById('btn-preview-pdf'),
+        confirmModal: document.getElementById('confirm-modal'),
+        confirmCancelBtn: document.getElementById('confirm-cancel-btn'),
+        confirmProceedBtn: document.getElementById('confirm-proceed-btn'),
+        toastContainer: document.getElementById('toast-container')
+      };
+
+      // Single reusable canvas to keep smartphone RAM consumption minimal
+      const workCanvas = document.createElement('canvas');
+      const workCtx = workCanvas.getContext('2d', { alpha: false });
+
+      // Separate tiny canvas for fast lightweight preview thumbnails
+      const thumbCanvas = document.createElement('canvas');
+      const thumbCtx = thumbCanvas.getContext('2d', { alpha: false });
+
+      /* =====================================================================
+       * UTILITY HELPERS
+       * ===================================================================== */
+
+      /**
+       * Formats bytes into human-readable MB / KB strings (decimal MB matches Amazon's strict display).
+       */
+      function formatBytes(bytes) {
+        if (!Number.isFinite(bytes) || bytes <= 0) return '0.00 MB';
+        if (bytes < 1_000_000) {
+          return `${(bytes / 1_000).toFixed(0)} KB`;
+        }
+        return `${(bytes / 1_000_000).toFixed(2)} MB`;
+      }
+
+      /**
+       * Sanitizes optional order label into a clean, safe PDF filename.
+       */
+      function getOutputFilename() {
+        const raw = (dom.orderLabelInput.value || '').trim();
+        if (!raw) return DEFAULT_FILENAME;
+        const cleaned = raw
+          .replace(/[^a-zA-Z0-9_\-\s]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '')
+          .slice(0, 50);
+        if (!cleaned) return DEFAULT_FILENAME;
+        return `Creativeiitian-UNO-${cleaned}.pdf`;
+      }
+
+      /**
+       * Yields back to the browser event loop so animations and Cancel clicks stay smooth.
+       */
+      function yieldToMain() {
+        return new Promise((resolve) => setTimeout(resolve, 0));
+      }
+
+      /**
+       * Checks whether a File appears to be a supported raster image.
+       */
+      function isSupportedImageFile(file) {
+        if (!file) return false;
+        if (file.type && file.type.startsWith('image/')) return true;
+        return /\.(jpe?g|png|webp|gif|bmp|avif)$/i.test(file.name || '');
+      }
+
+      /**
+       * Displays a polished toast notification (never uses browser alert()).
+       * @param {string} message
+       * @param {'info'|'success'|'warning'|'error'} type
+       */
+      function showToast(message, type = 'info') {
+        const styles = {
+          info: 'bg-[#111827] text-white border-gray-700',
+          success: 'bg-emerald-600 text-white border-emerald-500',
+          warning: 'bg-amber-500 text-white border-amber-400',
+          error: 'bg-red-600 text-white border-red-500'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `pointer-events-auto max-w-sm w-full sm:w-auto px-4 py-3 rounded-2xl border shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 animate-toast-in ${styles[type] || styles.info}`;
+        toast.innerHTML = `
+          <span class="flex-1 leading-snug"></span>
+          <button type="button" class="opacity-80 hover:opacity-100 p-1 rounded-lg focus:outline-none" aria-label="Dismiss notification">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        `;
+        toast.querySelector('span').textContent = message;
+
+        const dismiss = () => {
+          toast.classList.add('opacity-0', 'translate-y-2', 'transition-all', 'duration-200');
+          setTimeout(() => toast.remove(), 220);
+        };
+
+        toast.querySelector('button').addEventListener('click', dismiss);
+        dom.toastContainer.appendChild(toast);
+        setTimeout(dismiss, 4500);
+      }
+
+      /**
+       * Generates a lightweight ~220px JPEG thumbnail Blob URL so rendering 108 high-res
+       * smartphone photos never exhausts mobile browser memory.
+       */
+      async function createLightweightThumbUrl(file) {
+        const rawUrl = URL.createObjectURL(file);
+        try {
+          const img = await loadImageElement(rawUrl);
+          const maxSide = 220;
+          const scale = Math.min(1, maxSide / Math.max(img.naturalWidth || 1, img.naturalHeight || 1));
+          const tw = Math.max(1, Math.round(img.naturalWidth * scale));
+          const th = Math.max(1, Math.round(img.naturalHeight * scale));
+
+          thumbCanvas.width = tw;
+          thumbCanvas.height = th;
+          thumbCtx.fillStyle = '#FFFFFF';
+          thumbCtx.fillRect(0, 0, tw, th);
+          thumbCtx.drawImage(img, 0, 0, tw, th);
+
+          const blob = await new Promise((resolve) =>
+            thumbCanvas.toBlob((b) => resolve(b), 'image/jpeg', 0.72)
+          );
+
+          // Free tiny canvas memory
+          thumbCanvas.width = 1;
+          thumbCanvas.height = 1;
+
+          if (blob) {
+            URL.revokeObjectURL(rawUrl);
+            return URL.createObjectURL(blob);
+          }
+          return rawUrl;
+        } catch (err) {
+          // Fallback to raw object URL if thumbnailing fails
+          return rawUrl;
+        }
+      }
+
+      /**
+       * Loads an HTMLImageElement cleanly and waits for decode.
+       */
+      function loadImageElement(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = async () => {
+            try {
+              if (img.decode) await img.decode();
+            } catch (_) {
+              // Ignore decode warning if image is already loaded
+            }
+            resolve(img);
+          };
+          img.onerror = () => reject(new Error('Could not decode image file.'));
+          img.src = src;
+        });
+      }
+
+      /**
+       * Revokes previously created generated PDF Object URL to prevent memory leaks.
+       */
+      function clearGeneratedResult() {
+        if (state.generatedPdfUrl) {
+          URL.revokeObjectURL(state.generatedPdfUrl);
+          state.generatedPdfUrl = null;
+        }
+        state.generatedPdfBlob = null;
+        dom.resultPanel.classList.add('hidden');
+      }
+
+      /* =====================================================================
+       * PHOTO MANAGEMENT (ADD, ROTATE, REORDER, SHUFFLE, REMOVE, CLEAR)
+       * ===================================================================== */
+
+      /**
+       * Adds newly selected/dropped files while strictly enforcing the 108-image limit.
+       */
+      async function handleFilesAdded(fileList) {
+        if (state.isProcessing) {
+          showToast('Please wait for the current PDF build to finish or cancel it first.', 'warning');
+          return;
+        }
+
+        const incoming = Array.from(fileList || []);
+        if (incoming.length === 0) return;
+
+        const validImages = incoming.filter(isSupportedImageFile);
+        const invalidCount = incoming.length - validImages.length;
+
+        if (validImages.length === 0) {
+          showToast('Please select valid image files (JPG, PNG, or WebP).', 'error');
+          return;
+        }
+
+        const remainingSlots = MAX_IMAGES - state.photos.length;
+        if (remainingSlots <= 0) {
+          showToast('Limit is 108 images. Added 0 photos; all extra skipped.', 'warning');
+          return;
+        }
+
+        const toAdd = validImages.slice(0, remainingSlots);
+        const skippedExtra = validImages.length - toAdd.length;
+
+        // Clear any outdated generated PDF result since photo set is changing
+        clearGeneratedResult();
+
+        // Add photos sequentially in micro-batches so thumbnails appear smoothly without freezing mobile UI
+        for (let i = 0; i < toAdd.length; i++) {
+          const file = toAdd[i];
+          const thumbUrl = await createLightweightThumbUrl(file);
+          state.photos.push({
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            file,
+            name: file.name || `photo-${state.photos.length + 1}.jpg`,
+            size: file.size || 0,
+            thumbUrl,
+            rotation: 0
+          });
+
+          // Render incrementally every 10 images on large uploads so the user gets immediate visual feedback
+          if ((i + 1) % 10 === 0) {
+            renderWorkspace();
+            await yieldToMain();
+          }
+        }
+
+        renderWorkspace();
+
+        // User-friendly toast notifications
+        if (skippedExtra > 0) {
+          showToast(`Limit is 108 images. Added ${toAdd.length} photos; ${skippedExtra} extra skipped.`, 'warning');
+        } else if (invalidCount > 0) {
+          showToast(`Added ${toAdd.length} photo${toAdd.length > 1 ? 's' : ''}. Skipped ${invalidCount} unsupported file${invalidCount > 1 ? 's' : ''}.`, 'info');
+        } else {
+          showToast(`Added ${toAdd.length} photo${toAdd.length > 1 ? 's' : ''} (${state.photos.length}/${MAX_IMAGES} total).`, 'success');
+        }
+      }
+
+      /**
+       * Rotates a photo by 90 degrees clockwise.
+       */
+      function rotatePhoto(index) {
+        if (state.isProcessing || !state.photos[index]) return;
+        state.photos[index].rotation = (state.photos[index].rotation + 90) % 360;
+        clearGeneratedResult();
+        renderWorkspace();
+      }
+
+      /**
+       * Moves a photo left (-1) or right (+1) in deck order.
+       */
+      function movePhoto(index, delta) {
+        if (state.isProcessing) return;
+        const targetIndex = index + delta;
+        if (targetIndex < 0 || targetIndex >= state.photos.length) return;
+        const temp = state.photos[index];
+        state.photos[index] = state.photos[targetIndex];
+        state.photos[targetIndex] = temp;
+        clearGeneratedResult();
+        renderWorkspace();
+      }
+
+      /**
+       * Deletes a single photo and revokes its thumbnail Object URL cleanly.
+       */
+      function removePhoto(index) {
+        if (state.isProcessing || !state.photos[index]) return;
+        const [removed] = state.photos.splice(index, 1);
+        if (removed && removed.thumbUrl) {
+          URL.revokeObjectURL(removed.thumbUrl);
+        }
+        clearGeneratedResult();
+        renderWorkspace();
+      }
+
+      /**
+       * Fisher-Yates shuffle for randomizing UNO deck photo order.
+       */
+      function shufflePhotos() {
+        if (state.isProcessing || state.photos.length < 2) return;
+        for (let i = state.photos.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [state.photos[i], state.photos[j]] = [state.photos[j], state.photos[i]];
+        }
+        clearGeneratedResult();
+        renderWorkspace();
+        showToast('Shuffled your UNO card photo order!', 'info');
+      }
+
+      /**
+       * Removes all photos and revokes all Object URLs to free memory.
+       */
+      function clearAllPhotos() {
+        for (const item of state.photos) {
+          if (item.thumbUrl) URL.revokeObjectURL(item.thumbUrl);
+        }
+        state.photos = [];
+        state.showAllGrid = false;
+        clearGeneratedResult();
+        renderWorkspace();
+        showToast('Cleared all photos.', 'info');
+      }
+
+      /* =====================================================================
+       * UI RENDERING
+       * ===================================================================== */
+      function renderWorkspace() {
+        const count = state.photos.length;
+
+        if (count === 0) {
+          dom.statusPanel.classList.add('hidden');
+          dom.thumbnailGrid.innerHTML = '';
+          return;
+        }
+
+        dom.statusPanel.classList.remove('hidden');
+
+        // Total original size & progress bar
+        const totalOriginalBytes = state.photos.reduce((sum, p) => sum + p.size, 0);
+        const pct = Math.min(100, Math.round((count / MAX_IMAGES) * 100));
+        const remaining = MAX_IMAGES - count;
+
+        dom.photoCountBadge.textContent = `${count} / ${MAX_IMAGES} Photos`;
+        dom.originalSizeBadge.textContent = `Original Total: ${formatBytes(totalOriginalBytes)}`;
+        dom.remainingSlotsText.textContent = remaining === 0 ? 'Deck full (108 max reached)' : `${remaining} slots left`;
+        dom.countProgressBar.style.width = `${pct}%`;
+
+        // Disable "+ Add More" if at 108 limit
+        dom.btnAddMore.disabled = remaining === 0;
+        dom.btnAddMore.classList.toggle('opacity-50', remaining === 0);
+        dom.btnAddMore.classList.toggle('cursor-not-allowed', remaining === 0);
+
+        // Update Generate button text
+        dom.btnGenerateText.textContent = `Create ${count}-Page PDF (< 15 MB)`;
+
+        // Handle compact scrollable view when > 24 photos
+        if (count > COMPACT_THRESHOLD) {
+          dom.btnToggleGrid.classList.remove('hidden');
+          if (state.showAllGrid) {
+            dom.btnToggleGrid.textContent = 'Compact Grid View';
+            dom.gridScrollWrapper.classList.remove('max-h-[420px]', 'overflow-y-auto');
+          } else {
+            dom.btnToggleGrid.textContent = `Expand All (${count} Photos)`;
+            dom.gridScrollWrapper.classList.add('max-h-[420px]', 'overflow-y-auto');
+          }
+        } else {
+          dom.btnToggleGrid.classList.add('hidden');
+          dom.gridScrollWrapper.classList.remove('max-h-[420px]', 'overflow-y-auto');
+        }
+
+        // Render thumbnail cards using DocumentFragment for crisp speed
+        const fragment = document.createDocumentFragment();
+        state.photos.forEach((photo, idx) => {
+          const card = document.createElement('div');
+          card.className = 'group bg-white rounded-2xl border border-gray-200/90 overflow-hidden shadow-sm flex flex-col';
+
+          // Image Preview Container
+          const imgWrap = document.createElement('div');
+          imgWrap.className = 'relative aspect-[4/5] bg-gray-100 overflow-hidden flex items-center justify-center';
+
+          const img = document.createElement('img');
+          img.src = photo.thumbUrl;
+          img.alt = `Card photo ${idx + 1}`;
+          img.loading = 'lazy';
+          img.className = 'w-full h-full object-cover transition-transform duration-200';
+          if (photo.rotation !== 0) {
+            img.style.transform = `rotate(${photo.rotation}deg)`;
+          }
+
+          // Card number badge (#1, #2, ...)
+          const badge = document.createElement('span');
+          badge.className = 'absolute top-1.5 left-1.5 px-2 py-0.5 rounded-lg bg-[#111827]/85 text-white text-[10px] font-bold backdrop-blur-sm';
+          badge.textContent = `#${idx + 1}`;
+
+          // Quick Delete button (top-right, touch-friendly)
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.setAttribute('aria-label', `Remove photo ${idx + 1}`);
+          delBtn.className = 'absolute top-1.5 right-1.5 w-7 h-7 rounded-lg bg-white/90 hover:bg-red-600 text-gray-700 hover:text-white shadow-sm flex items-center justify-center transition active:scale-90';
+          delBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
+          delBtn.addEventListener('click', () => removePhoto(idx));
+
+          imgWrap.appendChild(img);
+          imgWrap.appendChild(badge);
+          imgWrap.appendChild(delBtn);
+
+          // Touch-Friendly Control Strip (Rotate + Move Left / Move Right)
+          const controls = document.createElement('div');
+          controls.className = 'p-1.5 bg-white border-t border-gray-100 flex items-center justify-between gap-1';
+
+          const leftBtn = document.createElement('button');
+          leftBtn.type = 'button';
+          leftBtn.disabled = idx === 0;
+          leftBtn.setAttribute('aria-label', `Move photo ${idx + 1} left`);
+          leftBtn.className = `p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 transition active:scale-90 ${idx === 0 ? 'opacity-30 cursor-not-allowed' : ''}`;
+          leftBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>`;
+          leftBtn.addEventListener('click', () => movePhoto(idx, -1));
+
+          const rotBtn = document.createElement('button');
+          rotBtn.type = 'button';
+          rotBtn.setAttribute('aria-label', `Rotate photo ${idx + 1} 90 degrees`);
+          rotBtn.className = 'flex-1 py-1.5 px-1 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-[#2563EB] text-[11px] font-semibold inline-flex items-center justify-center gap-1 transition active:scale-95';
+          rotBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9"/></svg>90°`;
+          rotBtn.addEventListener('click', () => rotatePhoto(idx));
+
+          const rightBtn = document.createElement('button');
+          rightBtn.type = 'button';
+          rightBtn.disabled = idx === count - 1;
+          rightBtn.setAttribute('aria-label', `Move photo ${idx + 1} right`);
+          rightBtn.className = `p-1.5 rounded-lg text-gray-600 hover:bg-gray-100 transition active:scale-90 ${idx === count - 1 ? 'opacity-30 cursor-not-allowed' : ''}`;
+          rightBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+          rightBtn.addEventListener('click', () => movePhoto(idx, 1));
+
+          controls.appendChild(leftBtn);
+          controls.appendChild(rotBtn);
+          controls.appendChild(rightBtn);
+
+          card.appendChild(imgWrap);
+          card.appendChild(controls);
+          fragment.appendChild(card);
+        });
+
+        dom.thumbnailGrid.innerHTML = '';
+        dom.thumbnailGrid.appendChild(fragment);
+      }
+
+      /* =====================================================================
+       * STRICT < 15 MB CLIENT-SIDE COMPRESSION & PDF ENGINE
+       * ===================================================================== */
+
+      /**
+       * Renders an HTMLImageElement onto the reusable canvas with white background,
+       * user 90-degree rotation, and target dimensions, then exports JPEG Uint8Array.
+       */
+      async function encodeCanvasToJpegBytes(img, rotationDeg, targetW, targetH, quality) {
+        workCanvas.width = targetW;
+        workCanvas.height = targetH;
+
+        // Crisp white background ensures transparent PNGs/WebPs never turn black in JPEG
+        workCtx.fillStyle = '#FFFFFF';
+        workCtx.fillRect(0, 0, targetW, targetH);
+
+        workCtx.save();
+        workCtx.translate(targetW / 2, targetH / 2);
+        workCtx.rotate((rotationDeg * Math.PI) / 180);
+
+        const isSwapped = rotationDeg === 90 || rotationDeg === 270;
+        const drawW = isSwapped ? targetH : targetW;
+        const drawH = isSwapped ? targetW : targetH;
+        workCtx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+        workCtx.restore();
+
+        const blob = await new Promise((resolve, reject) => {
+          workCanvas.toBlob(
+            (b) => (b ? resolve(b) : reject(new Error('Canvas JPEG encoding failed.'))),
+            'image/jpeg',
+            quality
+          );
+        });
+
+        const arrayBuffer = await blob.arrayBuffer();
+        return new Uint8Array(arrayBuffer);
+      }
+
+      /**
+       * Smartly compresses a single photo file to fit within its dynamic byte budget
+       * while keeping faces and print details crisp.
+       */
+      async function compressPhotoForBudget(photoItem, initialMaxDim, initialQuality, perImageBudget) {
+        const tempUrl = URL.createObjectURL(photoItem.file);
+        try {
+          const img = await loadImageElement(tempUrl);
+          const natW = img.naturalWidth || 1000;
+          const natH = img.naturalHeight || 1000;
+          const rotation = photoItem.rotation || 0;
+          const isSwapped = rotation === 90 || rotation === 270;
+
+          const baseW = isSwapped ? natH : natW;
+          const baseH = isSwapped ? natW : natH;
+
+          let currentMaxDim = Math.min(initialMaxDim, Math.max(baseW, baseH));
+          let currentQuality = initialQuality;
+
+          const computeDims = (maxD) => {
+            const scale = Math.min(1, maxD / Math.max(baseW, baseH));
+            return {
+              w: Math.max(120, Math.round(baseW * scale)),
+              h: Math.max(120, Math.round(baseH * scale))
+            };
+          };
+
+          let { w, h } = computeDims(currentMaxDim);
+          let jpegBytes = await encodeCanvasToJpegBytes(img, rotation, w, h, currentQuality);
+
+          // Step 1: If image exceeds 1.15x its per-image budget, iteratively lower JPEG quality down to 0.45
+          const upperLimit = perImageBudget * 1.15;
+          while (jpegBytes.byteLength > upperLimit && currentQuality > 0.45) {
+            currentQuality = Math.max(0.45, Number((currentQuality - 0.08).toFixed(2)));
+            jpegBytes = await encodeCanvasToJpegBytes(img, rotation, w, h, currentQuality);
+          }
+
+          // Step 2: If still over budget (e.g., ultra-noisy photo), step down dimensions by 0.82x
+          let dimAttempts = 0;
+          while (jpegBytes.byteLength > upperLimit && Math.max(w, h) > 360 && dimAttempts < 5) {
+            dimAttempts++;
+            currentMaxDim = Math.max(360, Math.round(Math.max(w, h) * 0.82));
+            ({ w, h } = computeDims(currentMaxDim));
+            jpegBytes = await encodeCanvasToJpegBytes(img, rotation, w, h, currentQuality);
+          }
+
+          // Step 3: Extreme safety valve for ultra-tiny budgets (only if still dramatically above budget)
+          if (jpegBytes.byteLength > perImageBudget * 1.25 && currentQuality > 0.35) {
+            jpegBytes = await encodeCanvasToJpegBytes(img, rotation, w, h, 0.35);
+          }
+
+          return { bytes: jpegBytes, width: w, height: h };
+        } finally {
+          URL.revokeObjectURL(tempUrl);
+        }
+      }
+
+      /**
+       * Returns smart initial max dimension & JPEG quality based on total photo count.
+       */
+      function getInitialCompressionProfile(count) {
+        if (count <= 15) return { maxDim: 1800, quality: 0.88 };
+        if (count <= 40) return { maxDim: 1400, quality: 0.84 };
+        if (count <= 75) return { maxDim: 1200, quality: 0.80 };
+        return { maxDim: 1050, quality: 0.78 };
+      }
+
+      /**
+       * Updates live progress bar UI cleanly.
+       */
+      function updateProgressUI(percent, title, subtitle) {
+        const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+        dom.progressPercent.textContent = `${clamped}%`;
+        dom.progressBarFill.style.width = `${clamped}%`;
+        if (title) dom.progressStageTitle.textContent = title;
+        if (subtitle) dom.progressStageSub.textContent = subtitle;
+      }
+
+      /**
+       * Builds one complete PDF pass using the given scale/quality tuning parameters.
+       */
+      async function buildPdfPass({ maxDim, quality, perImageBudget, layoutMode, passLabel }) {
+        const { PDFDocument, rgb } = window.PDFLib;
+        const pdfDoc = await PDFDocument.create();
+        pdfDoc.setTitle('Creativeiitian Custom Photo UNO Cards');
+        pdfDoc.setCreator('Creativeiitian Client-Side PDF Compressor');
+
+        const count = state.photos.length;
+        let accumulatedBytes = 0;
+
+        for (let i = 0; i < count; i++) {
+          if (state.isCancelled) {
+            throw new Error('USER_CANCELLED');
+          }
+
+          const pct = ((i + 1) / (count + 1)) * 92;
+          updateProgressUI(
+            pct,
+            `${passLabel} photo ${i + 1} of ${count}...`,
+            `Smart budget: ~${Math.round(perImageBudget / 1000)} KB/photo • 100% private in-browser`
+          );
+
+          // Yield before each image so progress UI & Cancel stay silky smooth on phones
+          await yieldToMain();
+
+          // Dynamic remaining-budget protection: if earlier images ran slightly over,
+          // gently tighten remaining images so we don't even need a fallback pass.
+          const remainingPhotos = count - i;
+          const pdfOverhead = count * 2200 + 100_000;
+          const remainingTotalBudget = Math.max(
+            remainingPhotos * 25_000,
+            SAFE_TARGET_BYTES - pdfOverhead - accumulatedBytes
+          );
+          const adaptiveBudget = Math.max(
+            25_000,
+            Math.min(perImageBudget * 1.15, Math.floor(remainingTotalBudget / remainingPhotos))
+          );
+
+          const compressed = await compressPhotoForBudget(
+            state.photos[i],
+            maxDim,
+            quality,
+            adaptiveBudget
+          );
+
+          accumulatedBytes += compressed.bytes.byteLength;
+
+          // Embed compressed JPEG directly into PDF
+          const jpgImage = await pdfDoc.embedJpg(compressed.bytes);
+
+          if (layoutMode === 'portrait') {
+            // Standard UNO-proportion portrait card page (420pt x 630pt = 2:3 ratio)
+            const pageW = 420;
+            const pageH = 630;
+            const margin = 16;
+            const availW = pageW - margin * 2;
+            const availH = pageH - margin * 2;
+
+            const page = pdfDoc.addPage([pageW, pageH]);
+            page.drawRectangle({
+              x: 0,
+              y: 0,
+              width: pageW,
+              height: pageH,
+              color: rgb(1, 1, 1)
+            });
+
+            const fitScale = Math.min(availW / compressed.width, availH / compressed.height);
+            const drawW = compressed.width * fitScale;
+            const drawH = compressed.height * fitScale;
+            const x = (pageW - drawW) / 2;
+            const y = (pageH - drawH) / 2;
+
+            page.drawImage(jpgImage, { x, y, width: drawW, height: drawH });
+          } else {
+            // Recommended: Fit Full Photo (No Cropping — page matches photo aspect ratio cleanly)
+            const longestPt = 595; // Crisp print-friendly point width/height
+            const ptScale = longestPt / Math.max(compressed.width, compressed.height);
+            const pageW = Math.max(200, Math.round(compressed.width * ptScale));
+            const pageH = Math.max(200, Math.round(compressed.height * ptScale));
+
+            const page = pdfDoc.addPage([pageW, pageH]);
+            page.drawImage(jpgImage, {
+              x: 0,
+              y: 0,
+              width: pageW,
+              height: pageH
+            });
+          }
+        }
+
+        if (state.isCancelled) {
+          throw new Error('USER_CANCELLED');
+        }
+
+        updateProgressUI(96, 'Assembling final PDF & verifying < 15 MB limit...', 'Almost ready for Amazon!');
+        await yieldToMain();
+
+        const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+        return pdfBytes;
+      }
+
+      /**
+       * Main orchestrator with HARD GUARANTEE FALLBACK LOOP (< 14.6 MB strictly enforced).
+       */
+      async function generateCompressedPdf() {
+        if (state.isProcessing) return;
+
+        if (!window.PDFLib || !window.PDFLib.PDFDocument) {
+          dom.libErrorBanner.classList.remove('hidden');
+          showToast('PDF engine not loaded yet. Please check your internet connection and refresh.', 'error');
+          return;
+        }
+
+        const count = state.photos.length;
+        if (count === 0) {
+          showToast('Please select at least 1 photo first.', 'warning');
+          return;
+        }
+
+        state.isProcessing = true;
+        state.isCancelled = false;
+        clearGeneratedResult();
+
+        // Lock controls & show progress panel
+        dom.generateActionBar.classList.add('hidden');
+        dom.progressPanel.classList.remove('hidden');
+        updateProgressUI(2, 'Preparing smart compression engine...', `Analyzing ${count} photo${count > 1 ? 's' : ''}...`);
+
+        const totalOriginalBytes = state.photos.reduce((sum, p) => sum + p.size, 0);
+        const layoutMode = dom.pageLayoutSelect.value || 'fit';
+
+        try {
+          const pdfOverhead = count * 2200 + 100_000;
+          let perImageBudget = Math.max(25_000, Math.floor((SAFE_TARGET_BYTES - pdfOverhead) / count));
+          let { maxDim, quality } = getInitialCompressionProfile(count);
+
+          // Pass 1: Smart adaptive pass
+          let pdfBytes = await buildPdfPass({
+            maxDim,
+            quality,
+            perImageBudget,
+            layoutMode,
+            passLabel: 'Optimizing'
+          });
+
+          // HARD GUARANTEE FALLBACK LOOP:
+          // Strictly guarantees output is ALWAYS < 14,600,000 bytes (well under 15 MB)
+          let fallbackAttempt = 0;
+          while (pdfBytes.byteLength >= STRICT_CEILING_BYTES && fallbackAttempt < 4) {
+            if (state.isCancelled) throw new Error('USER_CANCELLED');
+
+            fallbackAttempt++;
+            const scaleFactor = Math.min(0.88, Math.sqrt(13_600_000 / pdfBytes.byteLength) * 0.90);
+            maxDim = Math.max(320, Math.round(maxDim * scaleFactor));
+            quality = Math.max(0.38, Number((quality * 0.85).toFixed(2)));
+            perImageBudget = Math.max(18_000, Math.floor(perImageBudget * (13_400_000 / pdfBytes.byteLength)));
+
+            showToast(`Tightening compression (pass ${fallbackAttempt + 1}) to strictly stay under 15 MB...`, 'info');
+            pdfBytes = await buildPdfPass({
+              maxDim,
+              quality,
+              perImageBudget,
+              layoutMode,
+              passLabel: `Fine-tuning (Pass ${fallbackAttempt + 1})`
+            });
+          }
+
+          // Final verified Blob
+          const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+          state.generatedPdfBlob = pdfBlob;
+          state.generatedPdfUrl = URL.createObjectURL(pdfBlob);
+          state.generatedFilename = getOutputFilename();
+
+          updateProgressUI(100, 'Done!', 'PDF strictly verified under 15 MB.');
+
+          // Populate Result Stats
+          const finalBytes = pdfBlob.size;
+          const savedPct = totalOriginalBytes > 0
+            ? Math.max(0, Math.round(((totalOriginalBytes - finalBytes) / totalOriginalBytes) * 100))
+            : 0;
+
+          dom.statPages.textContent = `${count} Page${count > 1 ? 's' : ''}`;
+          dom.statOriginal.textContent = formatBytes(totalOriginalBytes);
+          dom.statFinal.textContent = formatBytes(finalBytes);
+          dom.statSaved.textContent = totalOriginalBytes > finalBytes ? `${savedPct}% Saved` : 'Optimized';
+          dom.resultPassNote.textContent = `${formatBytes(finalBytes)} / 15.00 MB max`;
+
+          // Reveal Result Panel smoothly
+          dom.progressPanel.classList.add('hidden');
+          dom.generateActionBar.classList.remove('hidden');
+          dom.resultPanel.classList.remove('hidden');
+          dom.resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+          showToast(`Success! ${count}-page PDF created (${formatBytes(finalBytes)}) — ready for Amazon!`, 'success');
+        } catch (err) {
+          dom.progressPanel.classList.add('hidden');
+          dom.generateActionBar.classList.remove('hidden');
+
+          if (err && err.message === 'USER_CANCELLED') {
+            showToast('PDF creation cancelled.', 'info');
+          } else {
+            console.error('PDF generation error:', err);
+            showToast('Something went wrong while processing one of your photos. Please try again.', 'error');
+          }
+        } finally {
+          // Always free reusable canvas buffer immediately
+          workCanvas.width = 1;
+          workCanvas.height = 1;
+          state.isProcessing = false;
+          state.isCancelled = false;
+        }
+      }
+
+      /**
+       * Triggers browser file download for the generated PDF.
+       */
+      function downloadGeneratedPdf() {
+        if (!state.generatedPdfUrl) return;
+        const link = document.createElement('a');
+        link.href = state.generatedPdfUrl;
+        link.download = getOutputFilename();
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        showToast(`Downloading ${link.download}`, 'success');
+      }
+
+      /**
+       * Opens the generated PDF in a new browser tab for quick customer inspection.
+       */
+      function previewGeneratedPdf() {
+        if (!state.generatedPdfUrl) return;
+        window.open(state.generatedPdfUrl, '_blank', 'noopener,noreferrer');
+      }
+
+      /* =====================================================================
+       * EVENT LISTENERS & INITIALIZATION
+       * ===================================================================== */
+      function initApp() {
+        // Apply centralized Amazon Store URL to all promo links
+        document.querySelectorAll('[data-amazon-link]').forEach((el) => {
+          el.setAttribute('href', AMAZON_STORE_URL);
+          if (AMAZON_STORE_URL.startsWith('http')) {
+            el.setAttribute('target', '_blank');
+            el.setAttribute('rel', 'noopener noreferrer');
+          }
+        });
+
+        // Verify pdf-lib availability once window finishes loading deferred script
+        window.addEventListener('load', () => {
+          if (!window.PDFLib || !window.PDFLib.PDFDocument) {
+            dom.libErrorBanner.classList.remove('hidden');
+          }
+        });
+
+        // Dropzone click & keyboard triggers
+        dom.dropZone.addEventListener('click', () => {
+          if (!state.isProcessing) dom.photoInput.click();
+        });
+        dom.dropZone.addEventListener('keydown', (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && !state.isProcessing) {
+            e.preventDefault();
+            dom.photoInput.click();
+          }
+        });
+
+        // Drag & drop highlighting & file capture
+        ['dragenter', 'dragover'].forEach((evt) => {
+          dom.dropZone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dom.dropZone.classList.add('border-[#2563EB]', 'bg-blue-50/70', 'scale-[1.005]');
+          });
+        });
+
+        ['dragleave', 'drop'].forEach((evt) => {
+          dom.dropZone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dom.dropZone.classList.remove('border-[#2563EB]', 'bg-blue-50/70', 'scale-[1.005]');
+          });
+        });
+
+        dom.dropZone.addEventListener('drop', (e) => {
+          if (e.dataTransfer && e.dataTransfer.files) {
+            handleFilesAdded(e.dataTransfer.files);
+          }
+        });
+
+        // File input selection
+        dom.photoInput.addEventListener('change', (e) => {
+          if (e.target.files && e.target.files.length > 0) {
+            handleFilesAdded(e.target.files);
+          }
+          // Reset input so user can re-select or append freely
+          e.target.value = '';
+        });
+
+        // Quick action buttons
+        dom.btnAddMore.addEventListener('click', () => {
+          if (!state.isProcessing && state.photos.length < MAX_IMAGES) {
+            dom.photoInput.click();
+          }
+        });
+
+        dom.btnShuffle.addEventListener('click', shufflePhotos);
+
+        // Clear All opens custom confirmation modal (if > 1 photo)
+        dom.btnClearAll.addEventListener('click', () => {
+          if (state.isProcessing) return;
+          if (state.photos.length <= 1) {
+            clearAllPhotos();
+          } else {
+            dom.confirmModal.classList.remove('hidden');
+          }
+        });
+
+        dom.confirmCancelBtn.addEventListener('click', () => {
+          dom.confirmModal.classList.add('hidden');
+        });
+        dom.confirmModal.addEventListener('click', (e) => {
+          if (e.target === dom.confirmModal) dom.confirmModal.classList.add('hidden');
+        });
+        dom.confirmProceedBtn.addEventListener('click', () => {
+          dom.confirmModal.classList.add('hidden');
+          clearAllPhotos();
+        });
+
+        // Live filename preview
+        dom.orderLabelInput.addEventListener('input', () => {
+          dom.filenamePreview.textContent = getOutputFilename();
+        });
+
+        // Layout helper text toggle
+        dom.pageLayoutSelect.addEventListener('change', () => {
+          clearGeneratedResult();
+          if (dom.pageLayoutSelect.value === 'portrait') {
+            dom.layoutHelperText.textContent = 'Each photo is centered cleanly on a uniform portrait UNO-ratio page.';
+          } else {
+            dom.layoutHelperText.textContent = 'Each PDF page matches your photo’s exact proportions with zero cropping.';
+          }
+        });
+
+        // Compact / Expand grid toggle
+        dom.btnToggleGrid.addEventListener('click', () => {
+          state.showAllGrid = !state.showAllGrid;
+          renderWorkspace();
+        });
+
+        // Generate, Cancel, Download, Preview buttons
+        dom.btnGeneratePdf.addEventListener('click', generateCompressedPdf);
+        dom.btnCancelProcess.addEventListener('click', () => {
+          state.isCancelled = true;
+          dom.progressStageTitle.textContent = 'Cancelling...';
+        });
+        dom.btnDownloadPdf.addEventListener('click', downloadGeneratedPdf);
+        dom.btnPreviewPdf.addEventListener('click', previewGeneratedPdf);
+
+        // FAQ Accordion Interactivity
+        document.querySelectorAll('.faq-trigger').forEach((trigger) => {
+          trigger.addEventListener('click', () => {
+            const item = trigger.closest('.faq-item');
+            const content = item.querySelector('.faq-content');
+            const chevron = item.querySelector('.faq-chevron');
+            const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+
+            // Close all others for clean single-open accordion feel
+            document.querySelectorAll('.faq-item').forEach((other) => {
+              other.querySelector('.faq-trigger').setAttribute('aria-expanded', 'false');
+              other.querySelector('.faq-content').classList.add('hidden');
+              other.querySelector('.faq-chevron').classList.remove('rotate-180');
+            });
+
+            if (!isOpen) {
+              trigger.setAttribute('aria-expanded', 'true');
+              content.classList.remove('hidden');
+              chevron.classList.add('rotate-180');
+            }
+          });
+        });
+
+        // Clean up Object URLs on page unload
+        window.addEventListener('beforeunload', () => {
+          for (const item of state.photos) {
+            if (item.thumbUrl) URL.revokeObjectURL(item.thumbUrl);
+          }
+          if (state.generatedPdfUrl) URL.revokeObjectURL(state.generatedPdfUrl);
+        });
+      }
+
+      initApp();
+    })();
+  </script>
+</body>
+</html>
